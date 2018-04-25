@@ -645,6 +645,9 @@ function drawLink(editor) {
 /**
  * Action for drawing an img.
  */
+/**
+ * Action for drawing an img.
+ */
 function drawImage(editor) {
     var cm = editor.codemirror;
     var stat = getState(cm);
@@ -652,11 +655,21 @@ function drawImage(editor) {
     var url = 'https://';
     if (options.promptURLs) {
         url = prompt(options.promptTexts.image);
+        _replaceSelection(cm, stat.image, options.insertTexts.image, url);
         if (!url) {
             return false;
         }
+    } else if (options.imagePickerFunc) {
+        options.imagePickerFunc().then(function (url) {
+            if(!url){
+                return false;
+            }
+            _replaceSelection(cm, stat.image, options.insertTexts.image, url);
+
+        });
+    } else {
+        _replaceSelection(cm, stat.image, options.insertTexts.image, url);
     }
-    _replaceSelection(cm, stat.image, options.insertTexts.image, url);
 }
 
 /**
